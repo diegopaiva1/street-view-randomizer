@@ -55,7 +55,7 @@ python3 main.py -c BRA ARG CHL
 
 #### `-l`
 
-Display a list of all available countries (those with some Google Street View Coverage). This is essentialy the countries listed on the `countries.py` file.
+Display a list of all available countries (those with some Google Street View Coverage). This is essentialy the countries listed on the [`countries.py`](https://github.com/diegopaiva1/street-view-explorer/blob/master/countries.py) file.
 
 #### `-r`
 
@@ -101,13 +101,13 @@ List of pitches, e.g., `-P -35 0 35`. The default value is 0.
 
 List of fovs, e.g., `-F 60 90 120`. The default value is 90.
 
-Note that the total number of images for each coordinate will be the product between the lengths of these lists. For each heading, the algorithm will generate a picture for each possible pair of pitch and fov.
+Note that the total number of images will be the product of the length of each list. For each heading, the algorithm will output an image for each pair of pitch and fov.
 
 #### `-S`
 
 Size of the output image, defaults to 256x256. The maximum size is 640x640. Must be a string of pattern `\d{1,3}x\d{1,3}`. 
 
-### Putting all together
+### Putting it all together
 
 The following command will perform 3 weighted samplings of 12 images of size 512x512:
 
