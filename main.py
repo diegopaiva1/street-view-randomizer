@@ -49,21 +49,15 @@ def main(args):
             f'\n> Image found in {country_iso3} ({country_name}) | lat: {coord.lat}, lon: {coord.lon} | attempts: {attempts} | total elapsed time: {total_elapsed_seconds:.2f}s\n'
         )
 
-        save_image(country_iso3, coord, args.headings, args.pitches)
+        save_image(country_iso3, coord, args.headings, args.pitches, args.fovs)
     
     print(f'\n--------------------------- Summary ---------------------------')
-    print(f'Average number of attempts: {avg_attempts / args.iterations}')
-    print(f'Average elapsed time: {avg_elapsed_time_ms / args.iterations / 1000:.2f}s')
+    print(f'Average number of attempts: {avg_attempts / args.iterations:.2f}')
+    print(f'Average elapsed time: {(avg_elapsed_time_ms / 1000) / args.iterations:.2f}s')
 
 
 
 def compute_area(gdf: gpd.GeoDataFrame):
-    """
-    Compute the area of each country in the GeoDataFrame.
-
-    :param `gdf`: GeoDataFrame.
-    :return: GeoDataFrame with the computed area
-    """
     gdf = gdf.eval("AREA = geometry.to_crs('esri:54009').area")
     gdf = gdf.sort_values(by='AREA', ascending=False)
 
@@ -80,12 +74,6 @@ def compute_area(gdf: gpd.GeoDataFrame):
 
 
 def find_available_image(gdf: gpd.GeoDataFrame, radius_m: int):
-    """
-    Returns a random coordinate that has an image available.
-
-    :param `gdf`: GeoDataFrame.
-    :return: Tuple containing the coordinate, the country, the number of attempts and the total elapsed time in seconds.
-    """
     coord = None
     country = None
     attempts = 0
@@ -119,23 +107,10 @@ def find_available_image(gdf: gpd.GeoDataFrame, radius_m: int):
 
 
 def get_random_country(gdf: gpd.GeoDataFrame):
-    """
-    Get a random country from a GeoDataFrame.
-
-    :param `gdf`: GeoDataFrame.
-    :return: Random country.
-    """
     return gdf.sample(n=1, weights='AREA_PERCENTAGE' if 'AREA_PERCENTAGE' in gdf.columns else None)
 
 
-def save_image(iso3_code: str, coord: Coordinate, headings=[0], pitches=[0]):
-    """
-    Save the image for the given coordinate and headings.
-
-    :param `coord`: Coordinate.
-    :param `headings`: List of headings, defaults to [0].
-    :return: None.
-    """
+def save_image(iso3_code: str, coord: Coordinate, headings, pitches, fovs):
     dir = f'images/{iso3_code.lower()}'
 
     if not os.path.exists(dir):
@@ -143,11 +118,12 @@ def save_image(iso3_code: str, coord: Coordinate, headings=[0], pitches=[0]):
 
     for heading in headings:
         for pitch in pitches:
-            img = api.getImage(coord, heading=heading, pitch=pitch)
-            img = Image.open(BytesIO(img))
-            img_name = f'{dir}/{coord.lat}_{coord.lon}_h{heading}_p{pitch}.jpg'
-            print(f'Saving {img_name}...')
-            img.save(img_name)
+            for fov in fovs:
+                img = api.getImage(coord, heading=heading, pitch=pitch, fov=fov)
+                img = Image.open(BytesIO(img))
+                img_name = f'{dir}/{coord.lat}_{coord.lon}_h{heading}_p{pitch}_f{fov}.jpg'
+                print(f'Saving {img_name}...')
+                img.save(img_name)
 
 
 if __name__ == '__main__':

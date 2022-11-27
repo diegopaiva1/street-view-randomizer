@@ -41,13 +41,14 @@ class StreetViewStaticApi:
 
         return image_found, coord
 
-    def getImage(self, coord: Coordinate, heading=0.0, pitch=0.0) -> bytes:
+    def getImage(self, coord: Coordinate, heading=0, pitch=0, fov=90) -> bytes:
         """
         Get an image from Google Street View Static API.
 
         :param `coord`: Coordinate.
         :param `heading`: Heading, defaults to 0.
         :param `pitch`: Pitch, defaults to 0.
+        :param `fov`: Field of view, defaults to 90.
         :return: Image in bytes.
         """
 
@@ -58,6 +59,7 @@ class StreetViewStaticApi:
                 'size': '256x256',
                 'heading': heading,
                 'pitch': pitch,
+                'fov': fov,
                 'key': self.api_key,
             }
         )

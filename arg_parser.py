@@ -64,6 +64,14 @@ class ArgParser():
         )
 
         parser.add_argument(
+            '-F', '--fovs',
+            help='list of fovs, defaults to [90]',
+            nargs='+',
+            type=int,
+            default=[90],
+        )
+
+        parser.add_argument(
             '-R', '--radius',
             help='radius (in meters) to search for images, defaults to 5.000 (5km)',
             type=IntRange(1, max_radius_m),
