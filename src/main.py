@@ -24,7 +24,7 @@ def main(args):
     for country in args.countries:
         if country.upper() not in countries_codes['iso3']:
             print(f'Bad country format: "{country}"')
-            print('Run with option -L to list all available countries')
+            print('Run with option -l to list all available countries')
             return
 
     gdf = gdf.query(f"ISO3 in {args.countries}")
@@ -37,7 +37,8 @@ def main(args):
     avg_elapsed_time_ms = 0
 
     for i in range(args.samples):
-        print(f'\n-------------------------------- Sampling {i + 1}/{args.samples} --------------------------------\n')
+        if i > 0:
+            print(f'\n-------------------------------- Sampling {i + 1}/{args.samples} --------------------------------\n')
 
         coord, country, attempts, total_elapsed_time_ms = find_available_image(gdf, args.radius)
         country_iso3 = country['ISO3'].values[0]
@@ -51,11 +52,11 @@ def main(args):
         )
 
         save_image(country_iso3, coord, args.size, args.headings, args.pitches, args.fovs)
-    
-    print(f'\n-------------------------------- Summary --------------------------------')
-    print(f'Average number of attempts: {avg_attempts / args.samples:.2f}')
-    print(f'Average elapsed time: {(avg_elapsed_time_ms / 1000) / args.samples:.2f}s')
 
+    if args.samples > 1:
+        print(f'\n-------------------------------- Summary --------------------------------')
+        print(f'Average number of attempts: {avg_attempts / args.samples:.2f}')
+        print(f'Average elapsed time: {(avg_elapsed_time_ms / 1000) / args.samples:.2f}s')
 
 
 def compute_area(gdf: gpd.GeoDataFrame):
@@ -71,7 +72,6 @@ def compute_area(gdf: gpd.GeoDataFrame):
     gdf = gdf.reset_index(drop=True)
 
     return gdf
-
 
 
 def find_available_image(gdf: gpd.GeoDataFrame, radius_m: int):
