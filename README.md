@@ -23,7 +23,7 @@ Copy `.env.example` contents to `.env`:
 cp .env.example .env
 ```
 
-Insert you API key inside the newly created `.env` file.
+Insert you API key into the newly created `.env` file.
 
 ## Usage
 
@@ -47,7 +47,7 @@ Saving images/lso/-29.72434941923827_27.62813570641534_h0_p0.jpg...
 
 #### `-c`
 
-Use the `-c` argument together with a list of [ISO3 country codes](https://www.iban.com/country-codes) to narrow the search. For instance, if we are interested in fetching an image from either Brazil, Argentina or Chile:
+Use the `-c` argument together with a list of one or more [ISO3 country codes](https://www.iban.com/country-codes) to narrow the search. For instance, if we are interested in fetching an image from either Brazil, Argentina or Chile:
 
 ```
 python3 main.py -c BRA ARG CHL
@@ -55,7 +55,7 @@ python3 main.py -c BRA ARG CHL
 
 #### `-l`
 
-Display a list of all available countries (those with some Google Street View Coverage). This is essentialy the countries listed on the [`countries.py`](https://github.com/diegopaiva1/street-view-explorer/blob/master/countries.py) file.
+Display a list of all available countries (those with some Google Street View Coverage).
 
 #### `-r`
 
@@ -105,7 +105,7 @@ Note that the total number of images will be the product of the length of each l
 
 #### `-S`
 
-Size of the output image, defaults to 256x256. The maximum size is 640x640. Must be a string of pattern `\d{1,3}x\d{1,3}`. 
+Size of the output image, defaults to 256x256. The maximum size allowed is 640x640. Each dimension must have at least a hundred pixels.
 
 ### Putting it all together
 
