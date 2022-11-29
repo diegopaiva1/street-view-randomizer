@@ -48,10 +48,10 @@ def main(args):
         avg_elapsed_time_ms += total_elapsed_time_ms
 
         print(
-            f'\n> Image found in {country_iso3} ({country_name}) | lat: {coord.lat}, lon: {coord.lon} | attempts: {attempts} | total elapsed time: {total_elapsed_seconds:.2f}s\n'
+            f'\n> Image found in {country_iso3} ({country_name}) | lat: {coord.lat}, lon: {coord.lon} | attempts: {attempts} | total elapsed time: {total_elapsed_seconds:.2f}s'
         )
 
-        save_image(country_iso3, coord, args.size, args.headings, args.pitches, args.fovs)
+        # save_image(country_iso3, coord, args.size, args.headings, args.pitches, args.fovs)
 
     if args.samples > 1:
         print(f'\n-------------------------------- Summary --------------------------------')
