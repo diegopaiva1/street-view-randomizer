@@ -23,20 +23,21 @@ def main(args):
 
     for country in args.countries:
         if country.upper() not in countries_codes['iso3']:
-            print(f'Bad country format: "{country}". Run with option -L to list all available countries.')
+            print(f'Bad country format: "{country}"')
+            print('Run with option -L to list all available countries')
             return
 
     gdf = gdf.query(f"ISO3 in {args.countries}")
 
     if args.use_area:
-        print('--use-area option is enabled, countries with bigger areas will have more chances of being selected')
+        print('--use-area option is enabled, countries with bigger areas are more likely to be selected')
         gdf = compute_area(gdf)
 
     avg_attempts = 0
     avg_elapsed_time_ms = 0
 
-    for i in range(args.iterations):
-        print(f'\n--------------------------- Iteration {i + 1}/{args.iterations} ---------------------------\n')
+    for i in range(args.samples):
+        print(f'\n-------------------------------- Sampling {i + 1}/{args.samples} --------------------------------\n')
 
         coord, country, attempts, total_elapsed_time_ms = find_available_image(gdf, args.radius)
         country_iso3 = country['ISO3'].values[0]
@@ -49,11 +50,11 @@ def main(args):
             f'\n> Image found in {country_iso3} ({country_name}) | lat: {coord.lat}, lon: {coord.lon} | attempts: {attempts} | total elapsed time: {total_elapsed_seconds:.2f}s\n'
         )
 
-        save_image(country_iso3, coord, args.headings, args.pitches, args.fovs)
+        save_image(country_iso3, coord, args.size, args.headings, args.pitches, args.fovs)
     
-    print(f'\n--------------------------- Summary ---------------------------')
-    print(f'Average number of attempts: {avg_attempts / args.iterations:.2f}')
-    print(f'Average elapsed time: {(avg_elapsed_time_ms / 1000) / args.iterations:.2f}s')
+    print(f'\n-------------------------------- Summary --------------------------------')
+    print(f'Average number of attempts: {avg_attempts / args.samples:.2f}')
+    print(f'Average elapsed time: {(avg_elapsed_time_ms / 1000) / args.samples:.2f}s')
 
 
 
@@ -110,7 +111,7 @@ def get_random_country(gdf: gpd.GeoDataFrame):
     return gdf.sample(n=1, weights='AREA_PERCENTAGE' if 'AREA_PERCENTAGE' in gdf.columns else None)
 
 
-def save_image(iso3_code: str, coord: Coordinate, headings, pitches, fovs):
+def save_image(iso3_code: str, coord: Coordinate, size, headings, pitches, fovs):
     dir = f'images/{iso3_code.lower()}'
 
     if not os.path.exists(dir):
@@ -119,7 +120,7 @@ def save_image(iso3_code: str, coord: Coordinate, headings, pitches, fovs):
     for heading in headings:
         for pitch in pitches:
             for fov in fovs:
-                img = api.getImage(coord, heading=heading, pitch=pitch, fov=fov)
+                img = api.getImage(coord, size, heading=heading, pitch=pitch, fov=fov)
                 img = Image.open(BytesIO(img))
                 img_name = f'{dir}/{coord.lat}_{coord.lon}_h{heading}_p{pitch}_f{fov}.jpg'
                 print(f'Saving {img_name}...')

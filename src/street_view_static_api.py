@@ -20,7 +20,7 @@ class StreetViewStaticApi:
         Check if the location has an image.
 
         :param `coord`: Coordinate.
-        :param `radius`: Radius (in meters) to search for an image.
+        :param `radius_m`: Radius (in meters) to search for an image.
         :return: Tuple containing a boolean indicating if an image was found and the coordinate.
         """
         response = requests.get(
@@ -41,11 +41,12 @@ class StreetViewStaticApi:
 
         return image_found, coord
 
-    def getImage(self, coord: Coordinate, heading=0, pitch=0, fov=90) -> bytes:
+    def getImage(self, coord: Coordinate, size: str, heading=0, pitch=0, fov=90) -> bytes:
         """
         Get an image from Google Street View Static API.
 
         :param `coord`: Coordinate.
+        :param `size`: Image size.
         :param `heading`: Heading, defaults to 0.
         :param `pitch`: Pitch, defaults to 0.
         :param `fov`: Field of view, defaults to 90.
@@ -56,7 +57,7 @@ class StreetViewStaticApi:
             self.endpoint,
             params={
                 'location': f'{coord.lat},{coord.lon}',
-                'size': '256x256',
+                'size': size,
                 'heading': heading,
                 'pitch': pitch,
                 'fov': fov,
