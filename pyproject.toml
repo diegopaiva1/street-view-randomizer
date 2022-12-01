@@ -3,12 +3,12 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "street-view-explorer"
+name = "street-view-randomizer"
 version = "1.0.3"
 license = { file = 'LICENSE' }
 
 description = "Generate random Google Street View images from all around the world"
-keywords = ['google', 'street view', 'explorer', 'random', 'images']
+keywords = ['google', 'street view', 'api', 'random', 'images']
 
 readme = "README.md"
 
@@ -26,8 +26,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/diegopaiva1/street-view-explorer"
-"Bug Tracker" = "https://github.com/diegopaiva1/street-view-explorer/issues"
+"Homepage" = "https://github.com/diegopaiva1/street-view-randomizer"
+"Bug Tracker" = "https://github.com/diegopaiva1/street-view-randomizer/issues"
 
 [project.scripts]
-street-view-explorer = "street_view_explorer.main:main"
+street-view-randomizer = "street_view_randomizer.main:main"

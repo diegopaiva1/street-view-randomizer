@@ -136,7 +136,7 @@ def save_image(iso3_code: str, coord: Coordinate):
 if __name__ == '__main__':
     try:
         args = ArgParser.parse_args()
-        api_key = args.api_key if args.api_key else os.environ.get('STREET_VIEW_STATIC_API_KEY')
+        api_key = args.api_key if args.api_key else os.environ.get('GOOGLE_MAPS_API_KEY')
         api = StreetViewStaticApi(api_key)
         main()
     except Exception as e:
