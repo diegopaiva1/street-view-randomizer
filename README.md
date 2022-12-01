@@ -25,7 +25,7 @@ Running with no arguments defaults to generating a single image anywhere in the 
 street-view-explorer --api-key=yourapikeyhere
 ```
 
-Output:
+The output will be something like:
 
 ```
 Searched image in LSO | lat:  -29.718921255685007 lon:    27.61507311464558 | elapsed time:   448.36ms
@@ -35,7 +35,7 @@ Searched image in LSO | lat:  -29.718921255685007 lon:    27.61507311464558 | el
 Saving images/lso/-29.72434941923827_27.62813570641534_h0_p0.jpg...
 ```
 
-To avoid passing an API key everytime you run the script, the script will fallback to the `STREET_VIEW_STATIC_API_KEY` environment variable. You can set it in your `.bashrc` or `.zshrc` file:
+To avoid passing an API key everytime you run the script, it will fallback to the `STREET_VIEW_STATIC_API_KEY` environment variable. You can set it in your `.bashrc` or `.zshrc` file:
 
 ```
 export STREET_VIEW_STATIC_API_KEY=yourapikeyhere
