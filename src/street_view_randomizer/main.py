@@ -28,7 +28,7 @@ def main():
     gdf = gdf.query(f"ISO3 in {args.countries}")
 
     if args.use_area:
-        print('--use-area option is enabled, countries with bigger areas are more likely to be selected')
+        print('--use-area option is enabled, countries with bigger areas are more likely to be selected\n')
         gdf = compute_area(gdf)
 
     avg_attempts = 0
@@ -46,7 +46,7 @@ def main():
         avg_elapsed_time_ms += total_elapsed_time_ms
 
         print(
-            f'\n> Image found in {country_iso3} ({country_name}) | lat: {coord.lat}, lon: {coord.lon} | attempts: {attempts} | total elapsed time: {total_elapsed_seconds:.2f}s'
+            f'\n> Image found in {country_iso3} ({country_name}) | lon: {coord.lon}, lat: {coord.lat} | attempts: {attempts} | total elapsed time: {total_elapsed_seconds:.2f}s'
         )
 
         save_image(country_iso3, coord)
@@ -96,7 +96,7 @@ def find_available_image(gdf: gpd.GeoDataFrame):
         total_elapsed_time_ms += elapsed_ms
 
         print(
-            f'Searched image in {country["ISO3"].values[0]} | lat: {random_lat:20} lon: {random_lon:20} | elapsed time: {elapsed_ms:8.2f}ms'
+            f'Searched image in {country["ISO3"].values[0]} | lon: {random_lon:20} lat: {random_lat:20} | elapsed time: {elapsed_ms:8.2f}ms'
         )
 
         if image_found:
@@ -119,18 +119,18 @@ def save_image(iso3_code: str, coord: Coordinate):
     pitches = args.pitches
     fovs = args.fovs
 
-    count = 1
+    count = 0
     total = len(headings) * len(pitches) * len(fovs)
 
     for h in headings:
         for p in pitches:
             for f in fovs:
+                count += 1
                 img = api.getImage(coord, args.size, heading=h, pitch=p, fov=f)
                 img = Image.open(BytesIO(img))
-                img_name = f'{dir}/{coord.lat}_{coord.lon}_h{h}_p{p}_f{f}.jpg'
-                print(f'\n({count}/{total})\tSaving {img_name}...')
+                img_name = f'{dir}/{coord.lon}_{coord.lat}_h{h}_p{p}_f{f}.jpg'
+                print(f'\t({count}/{total})\tSaving {img_name}...')
                 img.save(img_name)
-                count += 1
 
 
 if __name__ == '__main__':

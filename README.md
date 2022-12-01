@@ -27,11 +27,10 @@ street-view-randomizer --api-key=yourapikeyhere
 The output will be something like:
 
 ```
-Searched image in LSO | lat:  -29.718921255685007 lon:    27.61507311464558 | elapsed time:   448.36ms
+Searched image in PRI | lon:   -65.99685876172165 lat:    18.08766139664086 | elapsed time:   399.14ms
 
-> Image found in LSO (Lesotho) | lat: -29.72434941923827, lon: 27.62813570641534 | attempts: 1 | total elapsed time: 0.45s
-
-Saving images/lso/-29.72434941923827_27.62813570641534_h0_p0.jpg...
+> Image found in PRI (Puerto Rico) | lon: -66.0217481, lat: 18.1029857 | attempts: 1 | total elapsed time: 0.40s
+	(1/1)	Saving images/pri/-66.0217481_18.1029857_h0_p0_f90.jpg...
 ```
 
 ### API key
@@ -78,10 +77,10 @@ Note that the maximum number of iterations allowed is **28.000**, which happens 
 
 ### Image options
 
-Images are saved under the `images/<country-iso3-code>` directory from where you run the script. Images names follow the convention:
+Images are saved under the `images/<country-iso3-code>` directory from where you run the script. The image name follows the convention:
 
 ```
-<lat>_<lon>_h<heading>_p<pitch>_f<fov>.jpg
+<lon>_<lat>_h<heading>_p<pitch>_f<fov>.jpg
 ```
 
 Please refer to the [Street View Static API documentation](https://developers.google.com/maps/documentation/streetview/request-streetview) to understand the meaning of `heading`, `pitch` and `fov`.
