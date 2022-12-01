@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "street-view-explorer"
+version = "1.0.3"
+license = { file = 'LICENSE' }
+
+description = "Generate random Google Street View images from all around the world"
+keywords = ['google', 'street view', 'explorer', 'random', 'images']
+
+readme = "README.md"
+
+authors = [
+  { name="Diego Paiva", email="diego.paiva13@gmail.com" },
+]
+
+requires-python = ">=3.7"
+dependencies = ["geopandas", "shapely"]
+
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/diegopaiva1/street-view-explorer"
+"Bug Tracker" = "https://github.com/diegopaiva1/street-view-explorer/issues"
+
+[project.scripts]
+street-view-explorer = "street_view_explorer.main:main"
