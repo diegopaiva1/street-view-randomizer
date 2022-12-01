@@ -9,10 +9,8 @@ from countries import countries_codes
 from timeit import default_timer as timer
 from arg_parser import ArgParser
 
-api = StreetViewStaticApi()
 
-
-def main(args):
+def main():
     gdf = gpd.read_file("TM_WORLD_BORDERS-0.3/TM_WORLD_BORDERS-0.3.shp")
 
     if args.list_countries:
@@ -40,7 +38,7 @@ def main(args):
         if i > 0:
             print(f'\n-------------------------------- Sampling {i + 1}/{args.samples} --------------------------------\n')
 
-        coord, country, attempts, total_elapsed_time_ms = find_available_image(gdf, args.radius)
+        coord, country, attempts, total_elapsed_time_ms = find_available_image(gdf)
         country_iso3 = country['ISO3'].values[0]
         country_name = country['NAME'].values[0]
         total_elapsed_seconds = total_elapsed_time_ms / 1000
@@ -51,7 +49,7 @@ def main(args):
             f'\n> Image found in {country_iso3} ({country_name}) | lat: {coord.lat}, lon: {coord.lon} | attempts: {attempts} | total elapsed time: {total_elapsed_seconds:.2f}s'
         )
 
-        # save_image(country_iso3, coord, args.size, args.headings, args.pitches, args.fovs)
+        save_image(country_iso3, coord)
 
     if args.samples > 1:
         print(f'\n-------------------------------- Summary --------------------------------')
@@ -74,7 +72,7 @@ def compute_area(gdf: gpd.GeoDataFrame):
     return gdf
 
 
-def find_available_image(gdf: gpd.GeoDataFrame, radius_m: int):
+def find_available_image(gdf: gpd.GeoDataFrame):
     coord = None
     country = None
     attempts = 0
@@ -91,7 +89,7 @@ def find_available_image(gdf: gpd.GeoDataFrame, radius_m: int):
         coord = Coordinate(random_lat, random_lon)
 
         if coord.within(country.geometry.values[0]):
-            image_found, coord = api.hasImage(coord, radius_m)
+            image_found, coord = api.hasImage(coord, args.radius)
 
         end = timer()
         elapsed_ms = (end - start) * 1000
@@ -111,22 +109,36 @@ def get_random_country(gdf: gpd.GeoDataFrame):
     return gdf.sample(n=1, weights='AREA_PERCENTAGE' if 'AREA_PERCENTAGE' in gdf.columns else None)
 
 
-def save_image(iso3_code: str, coord: Coordinate, size, headings, pitches, fovs):
+def save_image(iso3_code: str, coord: Coordinate):
     dir = f'images/{iso3_code.lower()}'
 
     if not os.path.exists(dir):
         os.makedirs(dir)
 
-    for heading in headings:
-        for pitch in pitches:
-            for fov in fovs:
-                img = api.getImage(coord, size, heading=heading, pitch=pitch, fov=fov)
+    headings = args.headings
+    pitches = args.pitches
+    fovs = args.fovs
+
+    count = 1
+    total = len(headings) * len(pitches) * len(fovs)
+
+    for h in headings:
+        for p in pitches:
+            for f in fovs:
+                img = api.getImage(coord, args.size, heading=h, pitch=p, fov=f)
                 img = Image.open(BytesIO(img))
-                img_name = f'{dir}/{coord.lat}_{coord.lon}_h{heading}_p{pitch}_f{fov}.jpg'
-                print(f'Saving {img_name}...')
+                img_name = f'{dir}/{coord.lat}_{coord.lon}_h{h}_p{p}_f{f}.jpg'
+                print(f'\n({count}/{total})\tSaving {img_name}...')
                 img.save(img_name)
+                count += 1
 
 
 if __name__ == '__main__':
-    args = ArgParser.parse_args()
-    main(args)
+    try:
+        args = ArgParser.parse_args()
+        api_key = args.api_key if args.api_key else os.environ.get('STREET_VIEW_STATIC_API_KEY')
+        api = StreetViewStaticApi(api_key)
+        main()
+    except Exception as e:
+        print(e)
+        exit(1)

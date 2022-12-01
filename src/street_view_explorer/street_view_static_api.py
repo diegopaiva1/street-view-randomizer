@@ -1,19 +1,15 @@
-import os
 import requests
-from dotenv import load_dotenv
 from coordinate import Coordinate
 
-load_dotenv()
-
-
 class StreetViewStaticApi:
-    def __init__(self):
+    def __init__(self, api_key: str):
         self.endpoint = 'https://maps.googleapis.com/maps/api/streetview'
 
-        if (os.getenv('API_KEY') is None):
-            raise Exception('Missing API_KEY environment variable. Please set it in your .env file.')
+        if (api_key is None):
+            raise Exception('API key is required. Use --api-key or set STREET_VIEW_STATIC_API_KEY environment variable.')
 
-        self.api_key = os.getenv('API_KEY')
+        self.api_key = api_key
+
 
     def hasImage(self, coord: Coordinate, radius_m: int) -> tuple((bool, Coordinate)):
         """
@@ -32,6 +28,15 @@ class StreetViewStaticApi:
             }
         ).json()
 
+        if response['status'] == 'OVER_QUERY_LIMIT':
+            raise Exception('You have exceeded your daily quota or per-second quota for this API.')
+        
+        if response['status'] == 'REQUEST_DENIED':
+            raise Exception('Your request was denied by the server. Check your API key.')
+        
+        if response['status'] == 'UNKNOWN_ERROR':
+            raise Exception('An unknown error occurred on the server.')
+
         image_found = response['status'] == 'OK'
 
         if 'location' in response:
@@ -40,6 +45,7 @@ class StreetViewStaticApi:
             coord = Coordinate(lat, lon)
 
         return image_found, coord
+
 
     def getImage(self, coord: Coordinate, size: str, heading=0, pitch=0, fov=90) -> bytes:
         """

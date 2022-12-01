@@ -13,6 +13,7 @@ class IntRangeType(object):
             raise argparse.ArgumentTypeError(f'value outside of range [{self.start}-{self.stop}]')
 
         return value
+        
 
 class RegexpType(object):
     def __init__(self, regexp):
@@ -32,6 +33,12 @@ class ArgParser():
 
         max_free_api_calls = 28_000
         max_radius_m = 1_000_000
+
+        parser.add_argument(
+            '--api-key',
+            help='Google Street View Static API key',
+            type=str
+        )
 
         parser.add_argument(
             '-c', '--countries',
