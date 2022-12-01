@@ -1,36 +1,28 @@
 # Street View Explorer
 
+![GitHub](https://img.shields.io/github/license/diegopaiva1/street-view-explorer)
+![GitHub repo size](https://img.shields.io/github/repo-size/diegopaiva1/street-view-explorer)
+
+
 A Python command-line interface designed to generate random images from [Google Street View](http://maps.google.com).
 
 ## Requirements
 
-- Python >= 3.5
+- Python >= 3.6
 - [Google Maps Platform](https://developers.google.com/maps) API key
 
 ## Install
 
-Install dependencies:
-
 ```
-pip3 install python-dotenv
-pip3 install geopandas
-pip3 install shapely
+pip install street-view-explorer
 ```
-
-Copy `.env.example` contents to `.env`:
-
-```
-cp .env.example .env
-```
-
-Insert you API key into the newly created `.env` file.
 
 ## Usage
 
 Running with no arguments defaults to generating a single image anywhere in the world (equal probabilities with respect to countries sizes):
 
 ```
-python3 main.py
+street-view-explorer --api-key=yourapikeyhere
 ```
 
 Output:
@@ -43,6 +35,12 @@ Searched image in LSO | lat:  -29.718921255685007 lon:    27.61507311464558 | el
 Saving images/lso/-29.72434941923827_27.62813570641534_h0_p0.jpg...
 ```
 
+To avoid passing an API key everytime you run the script, the script will fallback to the `STREET_VIEW_STATIC_API_KEY` environment variable. You can set it in your `.bashrc` or `.zshrc` file:
+
+```
+export STREET_VIEW_STATIC_API_KEY=yourapikeyhere
+```
+
 ### General options
 
 #### `-c`
@@ -50,7 +48,7 @@ Saving images/lso/-29.72434941923827_27.62813570641534_h0_p0.jpg...
 Use the `-c` argument together with a list of one or more [ISO3 country codes](https://www.iban.com/country-codes) to narrow the search. For instance, if we are interested in fetching an image from either Brazil, Argentina or Chile:
 
 ```
-python3 main.py -c BRA ARG CHL
+street-view-explorer -c BRA ARG CHL
 ```
 
 #### `-l`
@@ -72,7 +70,7 @@ If the size of the country matters when sampling from a group of countries, pass
 To **sample** more than once (this doesn't mean fetching more than one image per country), pass in the `-n` flag with some desired number, e.g.:
 
 ```
-python3 main.py -n 3
+street-view-explorer -n 3
 ```
 
 Note that the maximum number of iterations allowed is **28.000**, which happens to be the maximum number of requests per month one can make without being charged by the Google Maps Platform. Be careful!
@@ -112,5 +110,5 @@ Size of the output image, defaults to 256x256. The maximum size allowed is 640x6
 The following command will perform 3 weighted samplings of 12 images of size 512x512:
 
 ```
-python3 main.py -n 3 -a -H 0 90 180 270 -P -45 0 35 -S '512x512'
+street-view-explorer -n 3 -a -H 0 90 180 270 -P -45 0 35 -S '512x512'
 ```
