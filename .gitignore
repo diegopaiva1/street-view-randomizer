@@ -1,6 +1,7 @@
+# Output images will be saved under the images directory from where the script is run
 images
 
-# VSCode
+# VSCode settings
 .vscode
 
 # Byte-compiled / optimized / DLL files
