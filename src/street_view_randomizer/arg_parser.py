@@ -35,7 +35,7 @@ class ArgParser():
         max_radius_m = 1_000_000
 
         parser.add_argument(
-            '--api-key',
+            '-k', '--api-key',
             help='Google Street View Static API key',
             type=str
         )
@@ -65,6 +65,13 @@ class ArgParser():
             help='Number of samples to get, defaults to 1.',
             type=IntRangeType(1, max_free_api_calls),
             default=1,
+        )
+
+        parser.add_argument(
+            '-o', '--output-dir',
+            help='Directory to save images to, defaults to images/ under the directory where the script is executed. If the directory does not exist, the script will try to create it.',
+            type=str,
+            default='./images/'
         )
 
         parser.add_argument(

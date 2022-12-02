@@ -110,7 +110,7 @@ def get_random_country(gdf: gpd.GeoDataFrame):
 
 
 def save_image(iso3_code: str, coord: Coordinate):
-    dir = f'images/{iso3_code.lower()}'
+    dir = f'{args.output_dir}/{iso3_code.lower()}'
 
     if not os.path.exists(dir):
         os.makedirs(dir)
