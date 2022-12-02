@@ -5,6 +5,8 @@
 
 A Python command-line interface designed to generate random images from [Google Street View](http://maps.google.com).
 
+Generate random Google Street View images from all around the world.
+
 ## Requirements
 
 - Python >= 3.6
@@ -43,7 +45,11 @@ export GOOGLE_MAPS_API_KEY=yourapikeyhere
 
 ### General options
 
-#### `-c`
+#### `-k, --api-key`
+
+[Google Maps Platform](https://developers.google.com/maps) API key.
+
+#### `-c, --countries`
 
 Use the `-c` argument together with a list of one or more [ISO3 country codes](https://www.iban.com/country-codes) to narrow the search. For instance, if we are interested in fetching an image from either Brazil, Argentina or Chile:
 
@@ -51,21 +57,21 @@ Use the `-c` argument together with a list of one or more [ISO3 country codes](h
 street-view-randomizer -c BRA ARG CHL
 ```
 
-#### `-l`
+#### `-l, --list-countries`
 
 Display a list of all available countries (those with some Google Street View Coverage).
 
-#### `-r`
+#### `-r, --radius`
 
-Defines a radius in meters centered on a latitude and longitude. The default value is 5.000 (5km). This value should only be increased if searching for an image is taking too long. 
+Defines a radius in meters centered on a latitude and longitude. The default value is 5.000 (5km). This value should only be increased if searching for an image is taking too long.
 
-#### `-a`
+#### `-a, --use-area`
 
 If the size of the country matters when sampling from a group of countries, passing in the `-a` flag will give bigger countries more chances of being drawn. The following chart shows the odds for each country if we consider the full space search:
 
 ![areas_percentage](https://user-images.githubusercontent.com/32985519/204120495-179ce98a-7544-4cd8-a22c-e10ccab81fed.png)
 
-#### `-n`
+#### `-n, --samples`
 
 To **sample** more than once (this doesn't mean fetching more than one image per country), pass in the `-n` flag with some desired number, e.g.:
 
@@ -74,6 +80,14 @@ street-view-randomizer -n 3
 ```
 
 Note that the maximum number of iterations allowed is **28.000**, which happens to be the maximum number of requests per month one can make without being charged by the Google Maps Platform. Be careful!
+
+#### `-o, --output-dir`
+
+By default all images are saved under the `images` directory from where the script is executed. To change the output directory, pass in the `-o` flag with the desired path, e.g.:
+
+```
+street-view-randomizer -o /home/user/images
+```
 
 ### Image options
 
@@ -87,21 +101,21 @@ Please refer to the [Street View Static API documentation](https://developers.go
 
 Anyway, you are allowed to pass a list of each one of these parameters to generate different imagery from the same coordinate.
 
-#### `-H`
+#### `-H, --headings`
 
 List of headings, e.g., `-H 0 90 180 270`. The default value is 0.
 
-#### `-P`
+#### `-P, --pitches`
 
 List of pitches, e.g., `-P -35 0 35`. The default value is 0.
 
-#### `-F`
+#### `-F, --fovs`
 
 List of fovs, e.g., `-F 60 90 120`. The default value is 90.
 
 Note that the total number of images will be the product of the length of each list. For each heading, the algorithm will output an image for each pair of pitch and fov.
 
-#### `-S`
+#### `-S, --size`
 
 Size of the output image, defaults to 256x256. The maximum size allowed is 640x640. Each dimension must have at least a hundred pixels.
 
