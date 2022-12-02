@@ -49,6 +49,13 @@ class ArgParser():
         )
 
         parser.add_argument(
+            '-r', '--radius',
+            help='Radius in meters to search for images, defaults to 5.000 (5km).',
+            type=IntRangeType(1, max_radius_m),
+            default=5000,
+        )
+
+        parser.add_argument(
             '-l', '--list-countries',
             help='List all available countries.',
             action='store_true',
@@ -96,13 +103,6 @@ class ArgParser():
             nargs='+',
             type=int,
             default=[90],
-        )
-
-        parser.add_argument(
-            '-R', '--radius',
-            help='Radius in meters to search for images, defaults to 5.000 (5km).',
-            type=IntRangeType(1, max_radius_m),
-            default=5000,
         )
 
         parser.add_argument(
