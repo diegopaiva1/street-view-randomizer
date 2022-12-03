@@ -4,26 +4,31 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "street-view-randomizer"
-version = "1.0.3"
-license = { file = 'LICENSE' }
+version = "1.0.0"
+license = { file = "LICENSE" }
 
 description = "Generate random Google Street View images from all around the world"
-keywords = ['google', 'street view', 'api', 'random', 'images']
+keywords = ["google", "street view", "api", "random", "images"]
 
 readme = "README.md"
 
 authors = [
-  { name="Diego Paiva", email="diego.paiva13@gmail.com" },
+  { name = "Diego Paiva", email = "diego.paiva13@gmail.com" },
 ]
 
-requires-python = ">=3.7"
-dependencies = ["geopandas", "shapely"]
+requires-python = ">=3.6"
 
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
+  "Environment :: Console",
   "Operating System :: OS Independent",
 ]
+
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
 
 [project.urls]
 "Homepage" = "https://github.com/diegopaiva1/street-view-randomizer"
