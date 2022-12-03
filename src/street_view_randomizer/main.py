@@ -40,28 +40,28 @@ def main():
         print(f'\n-------------------------------- Sampling {i + 1}/{args.samples} --------------------------------\n')
 
         coord, country_df, attempts, elapsed_time_ms = find_available_image(gdf)
+        total_attempts += attempts
+        total_elapsed_time_ms += elapsed_time_ms
 
         country_iso3 = country_df['ISO3'].values[0]
         country_name = country_df['NAME'].values[0]       
         gdf.loc[gdf['ISO3'] == country_iso3, 'IMAGES'] += total_images_per_country
 
-        total_attempts += attempts
-        total_elapsed_time_ms += elapsed_time_ms
-
         print(
             f'\n> Image found in {country_iso3} ({country_name}) | lon: {coord.lon}, lat: {coord.lat} | attempts: {attempts} | total elapsed time: {elapsed_time_ms / 1000:.2f}s'
         )
 
-        save_image(country_iso3, coord)
+        elapsed_time_ms = save_images(country_iso3, coord)
+        total_elapsed_time_ms += elapsed_time_ms
 
     if args.samples > 1:
         print(f'\n-------------------------------- Summary --------------------------------\n')
 
-        picked_countries_df = gdf.query('IMAGES > 0')[['ISO3', 'NAME', 'IMAGES']]
+        picked_countries_df = gdf.query('IMAGES > 0')
+        picked_countries_df = picked_countries_df[['ISO3', 'NAME', 'IMAGES']]
         picked_countries_df = picked_countries_df.sort_values(by='IMAGES', ascending=False).reset_index()
         picked_countries_df = picked_countries_df.eval('IMAGES_PERCENTAGE = (IMAGES / IMAGES.sum()) * 100.0')
         picked_countries_df.index += 1
-
         picked_countries_df.loc['TOTAL']= picked_countries_df[['IMAGES', 'IMAGES_PERCENTAGE']].sum()
 
         print(
@@ -71,7 +71,7 @@ def main():
                 show_dimensions=False,
                 col_space=10,
                 na_rep='',
-                formatters={'IMAGES': '{:n}'.format, 'IMAGES_PERCENTAGE': '{:.1f}'.format},
+                formatters={'IMAGES': '{:n}'.format, 'IMAGES_PERCENTAGE': '{:.2f}'.format},
             )
         )
 
@@ -134,7 +134,7 @@ def get_random_country(gdf: gpd.GeoDataFrame):
     return gdf.sample(n=1, weights='AREA_PERCENTAGE' if 'AREA_PERCENTAGE' in gdf.columns else None)
 
 
-def save_image(iso3_code: str, coord: Coordinate):
+def save_images(iso3_code: str, coord: Coordinate):
     if args.output_dir.endswith('/'):
         args.output_dir = args.output_dir[:-1]
 
@@ -144,6 +144,7 @@ def save_image(iso3_code: str, coord: Coordinate):
         os.makedirs(output_dir)
 
     count = 0
+    start = timer()
 
     for h in args.headings:
         for p in args.pitches:
@@ -154,6 +155,11 @@ def save_image(iso3_code: str, coord: Coordinate):
                 img_path = f'{output_dir}/{coord.lon}_{coord.lat}_h{h}_p{p}_f{f}.jpg'
                 print(f'\t({count}/{total_images_per_country})\tSaving to {img_path}...')
                 img.save(img_path)
+    
+    end = timer()
+    total_elapsed_time_ms = (end - start) * 1000
+
+    return total_elapsed_time_ms
 
 
 if __name__ == '__main__':
