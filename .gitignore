@@ -1,4 +1,4 @@
-# Output images will be saved under the images directory from where the script is run
+# By default, images will be saved under the `images` directory from where the script is executed 
 images
 
 # VSCode settings
