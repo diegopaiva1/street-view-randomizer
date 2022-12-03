@@ -20,7 +20,7 @@ pip install street-view-randomizer
 
 ## Usage
 
-Running with no arguments defaults to generating a single image anywhere in the world (equal probabilities with respect to countries sizes):
+The basic usage defaults to generating a single image anywhere in the world (equal probabilities with respect to countries sizes):
 
 ```
 street-view-randomizer --api-key=yourapikeyhere
@@ -93,7 +93,7 @@ street-view-randomizer -o /home/user/images
 
 ### Image options
 
-Images are saved under the `images/<country-iso3-code>` directory from where you run the script. The image name follows the convention:
+Images will be saved to a directory named after the country code (ISO3) where the following naming convention applies:
 
 ```
 <lon>_<lat>_h<heading>_p<pitch>_f<fov>.jpg
