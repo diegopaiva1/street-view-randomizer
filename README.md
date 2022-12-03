@@ -32,7 +32,7 @@ The output will be something like:
 Searched image in PRI | lon:   -65.99685876172165 lat:    18.08766139664086 | elapsed time:   399.14ms
 
 > Image found in PRI (Puerto Rico) | lon: -66.0217481, lat: 18.1029857 | attempts: 1 | total elapsed time: 0.40s
-	(1/1)	Saving images/pri/-66.0217481_18.1029857_h0_p0_f90.jpg...
+	(1/1)	Saving to ./images/pri/-66.0217481_18.1029857_h0_p0_f90.jpg...
 ```
 
 ### API key
@@ -44,6 +44,8 @@ export GOOGLE_MAPS_API_KEY=yourapikeyhere
 ```
 
 ### General options
+
+Here is a list of some useful flags one may pass to customize the behavior of the script.
 
 #### `-k, --api-key`
 
@@ -129,4 +131,4 @@ street-view-randomizer -n 3 -a -H 0 90 180 270 -P -45 0 35 -S '512x512'
 
 ## Contributing
 
-Feel free to open an issue or submit a pull request.
+The code should be pretty straightforward to understand and modify. Feel free to open an issue or submit a pull request.
