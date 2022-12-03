@@ -6,7 +6,7 @@ class StreetViewStaticApi:
         self.endpoint = 'https://maps.googleapis.com/maps/api/streetview'
 
         if (api_key is None):
-            raise Exception('API key is required. Use --api-key or set STREET_VIEW_STATIC_API_KEY environment variable.')
+            raise Exception('API key is required. Use --api-key or set the GOOGLE_MAPS_API_KEY environment variable.')
 
         self.api_key = api_key
 
