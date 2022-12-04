@@ -2,7 +2,7 @@ from shapely.geometry import Point
 
 
 class Coordinate:
-    def __init__(self, lat: float,  lon: float):
+    def __init__(self, lat: float, lon: float):
         self.lat = lat
         self.lon = lon
 
