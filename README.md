@@ -1,6 +1,6 @@
 # Street View Randomizer
 
-![GitHub](https://img.shields.io/github/license/diegopaiva1/street-view-randomizer)
+![GitHub license](https://img.shields.io/github/license/diegopaiva1/street-view-randomizer)
 ![GitHub repo size](https://img.shields.io/github/repo-size/diegopaiva1/street-view-randomizer)
 
 A Python command-line interface designed to generate random images from [Google Street View](http://maps.google.com).
