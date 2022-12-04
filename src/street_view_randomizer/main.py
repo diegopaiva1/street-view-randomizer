@@ -5,13 +5,16 @@ from io import BytesIO
 from timeit import default_timer as timer
 import geopandas as gpd
 from PIL import Image
-from street_view_static_api import StreetViewStaticApi
-from coordinate import Coordinate
-from countries import countries_codes
-from arg_parser import ArgParser
+from street_view_randomizer.countries import countries_codes
+from street_view_randomizer.street_view_static_api import StreetViewStaticApi
+from street_view_randomizer.coordinate import Coordinate
+from street_view_randomizer.arg_parser import ArgParser
 
 
-def main():
+def run(args):
+    global API
+    API = StreetViewStaticApi(args.api_key)
+
     gdf = gpd.read_file("TM_WORLD_BORDERS-0.3/TM_WORLD_BORDERS-0.3.shp")
 
     if args.list_countries:
@@ -34,13 +37,14 @@ def main():
         print("--use-area option is enabled, countries with bigger areas are more likely to be selected")
         gdf = compute_area(gdf)
 
+    total_images_per_country = len(args.headings) * len(args.pitches) * len(args.fovs)
     total_attempts = 0
     total_elapsed_time_ms = 0
 
     for i in range(args.samples):
         print(f"\n{'-' * 40} Sampling {i + 1}/{args.samples} {'-' * 40}\n")
 
-        coord, country_df, attempts, elapsed_time_ms = find_available_image(gdf)
+        coord, country_df, attempts, elapsed_time_ms = find_available_image(gdf, args.radius)
         total_attempts += attempts
         total_elapsed_time_ms += elapsed_time_ms
 
@@ -52,8 +56,9 @@ def main():
             f"\n> Image found in {country_iso3} ({country_name}) | lon: {coord.lon}, lat: {coord.lat} | attempts: {attempts} | total elapsed time: {elapsed_time_ms / 1000:.2f}s"
         )
 
-        elapsed_time_ms = save_images(country_iso3, coord)
-        total_elapsed_time_ms += elapsed_time_ms
+        total_elapsed_time_ms += save_images(
+            country_iso3, coord, args.output_dir, args.size, args.headings, args.pitches, args.fovs
+        )
 
     if args.samples > 1:
         print(f"\n{'-' * 40} Summary {'-' * 40}\n")
@@ -101,7 +106,7 @@ def compute_area(gdf: gpd.GeoDataFrame):
     return gdf
 
 
-def find_available_image(gdf: gpd.GeoDataFrame):
+def find_available_image(gdf: gpd.GeoDataFrame, radius_m):
     coord = None
     country_df = None
     attempts = 0
@@ -118,7 +123,7 @@ def find_available_image(gdf: gpd.GeoDataFrame):
         coord = Coordinate(random_lat, random_lon)
 
         if coord.within(country_df.geometry.values[0]):
-            image_found, coord = api.has_image(coord, args.radius)
+            image_found, coord = API.has_image(coord, radius_m)
 
         end = timer()
         elapsed_ms = (end - start) * 1000
@@ -138,23 +143,24 @@ def get_random_country(gdf: gpd.GeoDataFrame):
     return gdf.sample(n=1, weights="AREA_PERCENTAGE" if "AREA_PERCENTAGE" in gdf.columns else None)
 
 
-def save_images(iso3_code: str, coord: Coordinate):
-    if args.output_dir.endswith("/"):
-        args.output_dir = args.output_dir[:-1]
+def save_images(iso3_code: str, coord: Coordinate, output_dir, size, headings, pitches, fovs):
+    if output_dir.endswith("/"):
+        output_dir = output_dir[:-1]
 
-    output_dir = f"{args.output_dir}/{iso3_code.lower()}"
+    output_dir += f"/{iso3_code.lower()}"
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     count = 0
+    total_images_per_country = len(headings) * len(pitches) * len(fovs)
     start = timer()
 
-    for h in args.headings:
-        for p in args.pitches:
-            for f in args.fovs:
+    for h in headings:
+        for p in pitches:
+            for f in fovs:
                 count += 1
-                img = api.get_image(coord, args.size, heading=h, pitch=p, fov=f)
+                img = API.get_image(coord, size, heading=h, pitch=p, fov=f)
                 img = Image.open(BytesIO(img))
                 img_path = f"{output_dir}/{coord.lon}_{coord.lat}_h{h}_p{p}_f{f}.jpg"
                 print(f"\t({count}/{total_images_per_country})\tSaving to {img_path}...")
@@ -166,13 +172,14 @@ def save_images(iso3_code: str, coord: Coordinate):
     return total_elapsed_time_ms
 
 
-if __name__ == "__main__":
+def main():
     try:
         args = ArgParser.parse_args()
-        total_images_per_country = len(args.headings) * len(args.pitches) * len(args.fovs)
-        api_key = args.api_key if args.api_key else os.environ.get("GOOGLE_MAPS_API_KEY")
-        api = StreetViewStaticApi(api_key)
-        main()
+        run(args)
     except Exception as e:
         print(e)
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

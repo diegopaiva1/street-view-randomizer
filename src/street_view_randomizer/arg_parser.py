@@ -1,6 +1,6 @@
 import re
 import argparse
-from countries import countries_codes
+from street_view_randomizer.countries import countries_codes
 
 
 class IntRangeType(object):

@@ -1,5 +1,5 @@
 import requests
-from coordinate import Coordinate
+from street_view_randomizer.coordinate import Coordinate
 
 
 class StreetViewStaticApi:
